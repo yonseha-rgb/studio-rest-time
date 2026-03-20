@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grip Studio - 쉬는시간 패널</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;background:#f5f5f5;color:#1c1c1e;overflow-x:auto;}
+
+/* ===== LAYOUT ===== */
+.studio-layout{display:flex;height:100vh;min-width:1440px;}
+
+/* Sidebar */
+.sidebar{width:140px;background:#fff;border-right:1px solid #f0f0f0;display:flex;flex-direction:column;padding:16px 0;flex-shrink:0;}
+.sidebar-logo{display:flex;align-items:center;gap:8px;padding:0 16px 20px;border-bottom:1px solid #f0f0f0;margin-bottom:12px;}
+.sidebar-logo-icon{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#ff6b6b,#ee5a24);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:11px;}
+.sidebar-logo-text{font-size:14px;font-weight:600;color:#1c1c1e;line-height:1.2;}
+.sidebar-logo-text span{display:block;font-size:10px;font-weight:400;color:#8e8e93;}
+.sidebar-nav{flex:1;}
+.sidebar-item{display:flex;align-items:center;gap:8px;padding:10px 16px;font-size:13px;color:#8e8e93;cursor:pointer;border-left:3px solid transparent;transition:all 0.15s;}
+.sidebar-item:hover{background:#fafafa;}
+.sidebar-item.active{color:#ff4757;border-left-color:#ff4757;background:#fff5f5;font-weight:600;}
+.sidebar-item svg{width:18px;height:18px;flex-shrink:0;}
+.sidebar-bottom{border-top:1px solid #f0f0f0;padding-top:12px;}
+.sidebar-user{padding:8px 16px;display:flex;align-items:center;gap:8px;}
+.sidebar-avatar{width:28px;height:28px;border-radius:50%;background:#ffe0e6;display:flex;align-items:center;justify-content:center;font-size:10px;color:#ff4757;font-weight:600;}
+.sidebar-user-info{font-size:11px;line-height:1.3;}
+.sidebar-user-name{font-weight:600;color:#1c1c1e;}
+.sidebar-user-role{color:#8e8e93;}
+
+/* Main Content */
+.main-content{flex:1;display:flex;flex-direction:column;min-width:0;}
+
+/* Top Metrics Bar */
+.metrics-bar{background:#fff;border-bottom:1px solid #f0f0f0;padding:12px 20px;display:flex;align-items:center;gap:16px;flex-shrink:0;}
+.metric-card{flex:1;padding:8px 12px;background:#fafafa;border-radius:8px;text-align:center;}
+.metric-label{font-size:10px;color:#8e8e93;margin-bottom:2px;}
+.metric-value{font-size:15px;font-weight:600;color:#1c1c1e;}
+.metric-value.red{color:#ff4757;}
+
+/* Columns */
+.columns{flex:1;display:flex;gap:0;overflow:hidden;}
+
+/* Col 1 - Video */
+.col-video{width:380px;flex-shrink:0;background:#fff;border-right:1px solid #f0f0f0;display:flex;flex-direction:column;}
+.video-header{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #f0f0f0;}
+.video-timer{display:flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:#ff4757;}
+.video-timer-dot{width:7px;height:7px;border-radius:50%;background:#ff4757;animation:blink 1s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.video-controls{display:flex;gap:6px;}
+.vc-chip{padding:4px 10px;border-radius:4px;font-size:11px;background:#f5f5f5;color:#666;cursor:pointer;border:none;}
+.video-preview{position:relative;background:#2a2a2a;aspect-ratio:9/16;max-height:420px;margin:12px 16px;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;}
+.video-preview-inner{color:rgba(255,255,255,0.3);font-size:12px;text-align:center;}
+.video-device-info{position:absolute;top:8px;left:8px;display:flex;gap:4px;}
+.device-tag{background:rgba(0,0,0,0.5);color:white;font-size:9px;padding:2px 6px;border-radius:3px;}
+.video-gift{position:absolute;top:8px;left:8px;background:rgba(0,0,0,0.5);color:white;font-size:10px;padding:3px 8px;border-radius:4px;display:flex;align-items:center;gap:4px;margin-top:26px;}
+.video-actions{padding:12px 16px;display:flex;gap:8px;flex-wrap:wrap;border-top:1px solid #f0f0f0;}
+.va-btn{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;border:none;background:none;padding:6px 10px;border-radius:8px;transition:background 0.15s;}
+.va-btn:hover{background:#f5f5f5;}
+.va-icon{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;}
+.va-label{font-size:10px;color:#666;}
+
+/* Col 2 - Store */
+.col-store{flex:1;min-width:280px;background:#fff;border-right:1px solid #f0f0f0;display:flex;flex-direction:column;}
+.store-header{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #f0f0f0;}
+.store-title{font-size:15px;font-weight:600;}
+.store-actions{display:flex;gap:6px;}
+.store-action-btn{padding:6px 12px;border-radius:6px;font-size:11px;cursor:pointer;border:1px solid #e5e5ea;background:white;color:#666;display:flex;align-items:center;gap:4px;}
+.store-action-btn.primary{background:#1c1c1e;color:white;border-color:#1c1c1e;}
+.store-search{padding:10px 16px;border-bottom:1px solid #f0f0f0;}
+.store-search input{width:100%;padding:8px 12px 8px 32px;border:1px solid #e5e5ea;border-radius:8px;font-size:12px;background:#fafafa;outline:none;}
+.store-search input:focus{border-color:#ff4757;}
+.store-empty{flex:1;display:flex;align-items:center;justify-content:center;color:#c7c7cc;font-size:13px;}
+
+/* Col 3 - Chat */
+.col-chat{width:280px;flex-shrink:0;background:#fff;border-right:1px solid #f0f0f0;display:flex;flex-direction:column;}
+.chat-tabs{display:flex;border-bottom:1px solid #f0f0f0;}
+.chat-tab{flex:1;padding:10px 0;text-align:center;font-size:12px;color:#8e8e93;cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s;}
+.chat-tab.active{color:#1c1c1e;font-weight:600;border-bottom-color:#1c1c1e;}
+.chat-sub-tabs{display:flex;padding:8px 12px;gap:6px;border-bottom:1px solid #f0f0f0;}
+.chat-sub-tab{padding:5px 12px;border-radius:20px;font-size:11px;background:#f5f5f5;color:#8e8e93;cursor:pointer;border:none;}
+.chat-sub-tab.active{background:#1c1c1e;color:white;}
+.chat-body{flex:1;padding:12px;display:flex;align-items:center;justify-content:center;}
+.chat-placeholder{color:#c7c7cc;font-size:12px;}
+.chat-input-area{border-top:1px solid #f0f0f0;padding:10px 12px;}
+.chat-input-area textarea{width:100%;height:50px;border:1px solid #e5e5ea;border-radius:8px;padding:8px 10px;font-size:12px;resize:none;outline:none;font-family:inherit;}
+.chat-input-area textarea::placeholder{color:#c7c7cc;}
+.memo-section{border-top:1px solid #f0f0f0;padding:12px;}
+.memo-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.memo-title{font-size:13px;font-weight:600;}
+.memo-toggle{display:flex;align-items:center;gap:6px;font-size:10px;color:#8e8e93;}
+.memo-toggle-switch{width:36px;height:20px;border-radius:10px;background:#e5e5ea;position:relative;cursor:pointer;}
+.memo-toggle-switch::after{content:'';width:16px;height:16px;border-radius:50%;background:white;position:absolute;top:2px;left:2px;transition:left 0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.15);}
+.memo-input{width:100%;padding:8px 10px;border:1px solid #e5e5ea;border-radius:8px;font-size:11px;outline:none;resize:none;height:40px;font-family:inherit;}
+.memo-input::placeholder{color:#c7c7cc;}
+.memo-count{text-align:right;font-size:10px;color:#c7c7cc;margin-top:4px;}
+
+/* ===== COL 4 - BREAK TIME PANEL ===== */
+.col-break{width:320px;flex-shrink:0;background:#fff;display:flex;flex-direction:column;border-left:0;}
+
+.break-header{padding:14px 16px;border-bottom:1px solid #f0f0f0;display:flex;align-items:center;justify-content:space-between;}
+.break-header-left{display:flex;align-items:center;gap:10px;}
+.break-title{font-size:15px;font-weight:600;color:#1c1c1e;}
+.break-subtitle{font-size:11px;color:#8e8e93;font-weight:400;}
+.break-status{display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:600;}
+.break-status.idle{background:#f2f2f7;color:#8e8e93;}
+.break-status.active{background:#f3e8ff;color:#a855f7;}
+.break-status-dot{width:6px;height:6px;border-radius:50%;}
+.break-status.idle .break-status-dot{background:#c7c7cc;}
+.break-status.active .break-status-dot{background:#a855f7;animation:blink 1s infinite;}
+
+.break-search{padding:10px 16px 0;}
+.break-search-input{width:100%;padding:8px 12px 8px 34px;border:1px solid #e5e5ea;border-radius:8px;font-size:12px;background:#fafafa;outline:none;transition:border-color 0.2s;position:relative;}
+.break-search-input:focus{border-color:#a855f7;}
+.break-search-input::placeholder{color:#c7c7cc;}
+.break-search-wrap{position:relative;}
+.break-search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#c7c7cc;pointer-events:none;}
+
+.break-sort{display:flex;gap:5px;padding:10px 16px;border-bottom:1px solid #f0f0f0;}
+.break-sort-chip{padding:5px 12px;border-radius:16px;font-size:11px;font-weight:500;cursor:pointer;border:1px solid #e5e5ea;background:#fafafa;color:#8e8e93;transition:all 0.15s;}
+.break-sort-chip:hover:not(.active){background:#f0f0f0;}
+.break-sort-chip.active{background:#a855f7;color:white;border-color:#a855f7;}
+
+.break-list{flex:1;overflow-y:auto;padding:0;}
+.break-list::-webkit-scrollbar{width:4px;}
+.break-list::-webkit-scrollbar-thumb{background:#e5e5ea;border-radius:2px;}
+.break-list::-webkit-scrollbar-thumb:hover{background:#c7c7cc;}
+
+.break-item{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid #f8f8f8;transition:background 0.1s;cursor:default;}
+.break-item:hover{background:#fafafa;}
+.break-item.playing-row{background:#faf5ff;}
+
+.break-thumb{width:56px;height:74px;border-radius:8px;flex-shrink:0;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;}
+.break-thumb-play{width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;}
+.break-thumb-dur{position:absolute;bottom:3px;right:3px;background:rgba(0,0,0,0.6);color:white;font-size:8px;padding:1px 4px;border-radius:2px;font-variant-numeric:tabular-nums;}
+
+.break-item-info{flex:1;min-width:0;}
+.break-item-title{font-size:12px;font-weight:500;color:#1c1c1e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px;}
+.break-item-meta{display:flex;align-items:center;gap:5px;font-size:10px;color:#8e8e93;}
+.break-item-meta .dot{width:2px;height:2px;border-radius:50%;background:#c7c7cc;}
+.break-playing-badge{display:flex;align-items:center;gap:3px;margin-top:4px;}
+.break-playing-dot{width:4px;height:4px;border-radius:50%;background:#a855f7;animation:blink 1s infinite;}
+.break-playing-text{font-size:10px;color:#a855f7;font-weight:600;}
+
+.break-cta{flex-shrink:0;}
+.break-cta-btn{display:flex;align-items:center;gap:4px;padding:6px 14px;border-radius:16px;border:none;cursor:pointer;font-size:11px;font-weight:600;transition:all 0.15s;}
+.break-cta-btn:hover{filter:brightness(1.05);}
+.break-cta-btn:active{transform:scale(0.96);}
+.break-cta-btn.play{background:#a855f7;color:white;}
+.break-cta-btn.stop{background:#fee2e2;color:#ef4444;}
+.break-cta-btn svg{width:12px;height:12px;}
+
+.break-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:#c7c7cc;font-size:12px;}
+
+/* Break Footer - Now Playing */
+.break-footer{border-top:1px solid #f0f0f0;padding:12px 16px;background:#fafafa;flex-shrink:0;}
+.break-footer.hidden{display:none;}
+.now-playing-label{font-size:9px;font-weight:600;color:#a855f7;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;display:flex;align-items:center;gap:4px;}
+.now-playing-label .np-dot{width:5px;height:5px;border-radius:50%;background:#a855f7;animation:blink 1s infinite;}
+.now-playing-info{display:flex;align-items:center;gap:10px;}
+.now-playing-thumb{width:40px;height:52px;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.now-playing-text{flex:1;min-width:0;}
+.now-playing-title{font-size:12px;font-weight:500;color:#1c1c1e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.now-playing-meta{font-size:10px;color:#8e8e93;margin-top:2px;}
+.now-playing-progress{margin-top:8px;height:3px;background:#e5e5ea;border-radius:2px;overflow:hidden;}
+.now-playing-progress-bar{height:100%;background:linear-gradient(90deg,#a855f7,#ec4899);border-radius:2px;transition:width 0.1s linear;}
+.now-playing-stop{padding:5px 12px;border-radius:14px;border:1px solid #fecaca;background:#fff;color:#ef4444;font-size:10px;font-weight:600;cursor:pointer;transition:all 0.15s;flex-shrink:0;}
+.now-playing-stop:hover{background:#fef2f2;}
+
+/* Confirm Modal */
+.confirm-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.4);z-index:100;align-items:center;justify-content:center;}
+.confirm-dialog{background:white;border-radius:16px;padding:28px 24px 20px;width:340px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.2);}
+.confirm-icon{width:52px;height:52px;border-radius:50%;background:#fef2f2;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;}
+.confirm-title{font-size:16px;font-weight:600;color:#1c1c1e;margin-bottom:6px;}
+.confirm-desc{font-size:13px;color:#8e8e93;line-height:1.5;margin-bottom:20px;}
+.confirm-actions{display:flex;gap:8px;}
+.confirm-btn{flex:1;padding:11px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all 0.1s;}
+.confirm-btn:active{transform:scale(0.97);}
+.confirm-cancel{background:#f2f2f7;color:#1c1c1e;}
+.confirm-cancel:hover{background:#e5e5ea;}
+.confirm-ok{background:#ef4444;color:white;}
+.confirm-ok:hover{background:#dc2626;}
+
+/* Countdown */
+.countdown-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:101;align-items:center;justify-content:center;}
+.countdown-box{text-align:center;}
+.countdown-num{font-size:64px;font-weight:700;color:white;animation:countPop 0.5s ease;}
+@keyframes countPop{0%{transform:scale(1.5);opacity:0}40%{transform:scale(1);opacity:1}}
+.countdown-label{color:rgba(255,255,255,0.6);font-size:13px;margin-top:8px;}
+</style>
+</head>
+<body>
+
+<div class="studio-layout">
+
+  <!-- ===== SIDEBAR ===== -->
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-icon">Grip</div>
+      <div class="sidebar-logo-text">Grip<span>STUDIO</span></div>
+    </div>
+    <div class="sidebar-nav">
+      <div class="sidebar-item active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        대시보드
+      </div>
+      <div class="sidebar-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+        스크립트
+      </div>
+    </div>
+    <div class="sidebar-bottom">
+      <div class="sidebar-item" style="font-size:11px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01"/></svg>
+        문의하기
+      </div>
+      <div class="sidebar-user">
+        <div class="sidebar-avatar">예</div>
+        <div class="sidebar-user-info">
+          <div class="sidebar-user-name">예나사랑나라사랑</div>
+          <div class="sidebar-user-role">Seller</div>
+        </div>
+      </div>
+      <div class="sidebar-item" style="font-size:11px;color:#c7c7cc;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+        로그아웃
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MAIN ===== -->
+  <div class="main-content">
+
+    <!-- Metrics -->
+    <div class="metrics-bar">
+      <div style="font-size:14px;font-weight:600;margin-right:8px;white-space:nowrap;">실시간 판매 성과</div>
+      <div class="metric-card"><div class="metric-label">실시간 접속</div><div class="metric-value">0 명</div></div>
+      <div class="metric-card"><div class="metric-label">누적 접속</div><div class="metric-value">4 명</div></div>
+      <div class="metric-card"><div class="metric-label">주문 금액</div><div class="metric-value">0 원</div></div>
+      <div class="metric-card"><div class="metric-label">주문 건수</div><div class="metric-value">0 건</div></div>
+      <div class="metric-card"><div class="metric-label">실거래 금액</div><div class="metric-value">0 원</div></div>
+      <div class="metric-card"><div class="metric-label">장바구니 횟수</div><div class="metric-value">0 개</div></div>
+      <div class="metric-card"><div class="metric-label">장바구니 점유 금액</div><div class="metric-value">0 원</div></div>
+    </div>
+
+    <!-- Columns -->
+    <div class="columns">
+
+      <!-- Col 1: Video -->
+      <div class="col-video">
+        <div class="video-header">
+          <div class="video-timer"><div class="video-timer-dot"></div> 00:10:28</div>
+          <div class="video-controls">
+            <button class="vc-chip">📶 정상</button>
+            <button class="vc-chip">🎞 정상</button>
+            <button class="vc-chip">34FPS</button>
+            <button class="vc-chip">📷</button>
+            <button class="vc-chip">🖥 공연</button>
+          </div>
+        </div>
+        <div class="video-preview">
+          <div style="position:absolute;top:8px;left:8px;display:flex;gap:4px;flex-wrap:wrap;">
+            <span class="device-tag">Galaxy Z Flip(SM-F700S)</span>
+            <span class="device-tag">Android 13</span>
+            <span class="device-tag" style="background:rgba(168,85,247,0.6);">Grip 앱04 4.6s</span>
+          </div>
+          <div style="position:absolute;top:36px;left:8px;" class="device-tag">🎁 100/10,000</div>
+          <div class="video-preview-inner">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+            <p style="margin-top:8px;">카메라 미리보기</p>
+          </div>
+        </div>
+        <div class="video-actions">
+          <button class="va-btn"><div class="va-icon" style="background:#f5f5f5;">😊</div><span class="va-label">다시하기</span></button>
+          <button class="va-btn"><div class="va-icon" style="background:#fff8e1;">👆</div><span class="va-label">선착순</span></button>
+          <button class="va-btn"><div class="va-icon" style="background:#fce4ec;">🎁</div><span class="va-label">추첨</span></button>
+          <button class="va-btn"><div class="va-icon" style="background:#e8eaf6;">🔨</div><span class="va-label">경매</span></button>
+          <button class="va-btn"><div class="va-icon" style="background:#e0f2f1;">⭕</div><span class="va-label">OX</span></button>
+          <button class="va-btn"><div class="va-icon" style="background:#fce4ec;">🔤</div><span class="va-label">초성</span></button>
+          <button class="va-btn"><div class="va-icon" style="background:#fff3e0;">🎲</div><span class="va-label">주사위</span></button>
+        </div>
+      </div>
+
+      <!-- Col 2: Store -->
+      <div class="col-store">
+        <div class="store-header">
+          <div class="store-title">스토어</div>
+          <div class="store-actions">
+            <button class="store-action-btn">📋 등록 상품</button>
+            <button class="store-action-btn primary">✏️ 상품</button>
+          </div>
+        </div>
+        <div class="store-search">
+          <input type="text" placeholder="🔍  상품, 상품코드를 입력하세요" />
+        </div>
+        <div class="store-empty">등록된 스토어 상품이 없습니다</div>
+      </div>
+
+      <!-- Col 3: Chat -->
+      <div class="col-chat">
+        <div class="chat-tabs">
+          <div class="chat-tab active">채팅</div>
+          <div class="chat-tab">공지</div>
+          <div class="chat-tab">Q&A</div>
+          <div class="chat-tab">FAQ</div>
+        </div>
+        <div class="chat-sub-tabs">
+          <button class="chat-sub-tab active">라이브 소개</button>
+          <button class="chat-sub-tab">혜택</button>
+          <button class="chat-sub-tab">배송</button>
+          <button class="chat-sub-tab">사이즈</button>
+        </div>
+        <div class="chat-body"><span class="chat-placeholder">라이브 소개 글을 남겨보세요</span></div>
+        <div class="chat-input-area">
+          <textarea placeholder="라이브 소개 글을 남겨보세요"></textarea>
+        </div>
+        <div class="memo-section">
+          <div class="memo-header">
+            <span class="memo-title">메모</span>
+            <div class="memo-toggle">
+              화면에 표시
+              <div class="memo-toggle-switch"></div>
+            </div>
+          </div>
+          <textarea class="memo-input" placeholder="메모를 남길 수 있어요."></textarea>
+          <div class="memo-count">0/100</div>
+        </div>
+      </div>
+
+      <!-- ===== Col 4: BREAK TIME PANEL ===== -->
+      <div class="col-break">
+        <div class="break-header">
+          <div class="break-header-left">
+            <span class="break-title">쉬는시간</span>
+            <span class="break-subtitle">쉬는동안 쇼츠를 보여주세요!</span>
+          </div>
+          <div class="break-status idle" id="break-status">
+            <div class="break-status-dot"></div>
+            대기중
+          </div>
+        </div>
+
+        <div class="break-search">
+          <div class="break-search-wrap">
+            <svg class="break-search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            <input class="break-search-input" id="break-search" type="text" placeholder="쇼츠 검색..." />
+          </div>
+        </div>
+
+        <div class="break-sort" id="break-sort">
+          <button class="break-sort-chip active" data-sort="latest">최신순</button>
+          <button class="break-sort-chip" data-sort="views">조회순</button>
+          <button class="break-sort-chip" data-sort="oldest">오래된순</button>
+        </div>
+
+        <div class="break-list" id="break-list"></div>
+
+        <div class="break-footer hidden" id="break-footer">
+          <div class="now-playing-label"><div class="np-dot"></div> NOW PLAYING</div>
+          <div class="now-playing-info">
+            <div class="now-playing-thumb" id="np-thumb" style="background:#7c3aed;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
+            </div>
+            <div class="now-playing-text">
+              <div class="now-playing-title" id="np-title">—</div>
+              <div class="now-playing-meta" id="np-meta">—</div>
+            </div>
+            <button class="now-playing-stop" id="np-stop">종료</button>
+          </div>
+          <div class="now-playing-progress">
+            <div class="now-playing-progress-bar" id="np-progress"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Confirm -->
+<div class="confirm-overlay" id="confirm-overlay">
+  <div class="confirm-dialog">
+    <div class="confirm-icon">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0zM12 9v4M12 17h.01"/></svg>
+    </div>
+    <div class="confirm-title">쇼츠 재생을 종료할까요?</div>
+    <div class="confirm-desc">종료하면 카메라가 다시 시청자에게 노출됩니다.<br/>3초 카운트다운 후 라이브 화면으로 전환됩니다.</div>
+    <div class="confirm-actions">
+      <button class="confirm-btn confirm-cancel" id="c-cancel">취소</button>
+      <button class="confirm-btn confirm-ok" id="c-ok">종료하기</button>
+    </div>
+  </div>
+</div>
+
+<!-- Countdown -->
+<div class="countdown-overlay" id="countdown-overlay">
+  <div class="countdown-box">
+    <div class="countdown-num" id="cd-num">3</div>
+    <div class="countdown-label">잠시 후 라이브로 전환됩니다</div>
+  </div>
+</div>
+
+<script>
+const shorts=[
+  {id:1,title:"봄 신상 플라워 원피스 코디",views:12400,date:"2026-03-18",color:"#7c3aed",dur:"0:18"},
+  {id:2,title:"데일리 니트 가디건 3컬러 비교",views:8900,date:"2026-03-15",color:"#ec4899",dur:"0:24"},
+  {id:3,title:"출근룩 슬랙스 핏 비교 리뷰",views:23100,date:"2026-03-10",color:"#06b6d4",dur:"0:31"},
+  {id:4,title:"주말 캐주얼 데님 셋업",views:5600,date:"2026-03-08",color:"#f59e0b",dur:"0:15"},
+  {id:5,title:"하객룩 블라우스 추천 TOP3",views:31200,date:"2026-02-28",color:"#10b981",dur:"0:27"},
+  {id:6,title:"트렌치코트 사이즈별 착용샷",views:18700,date:"2026-02-20",color:"#ef4444",dur:"0:22"},
+  {id:7,title:"봄 컬러 팔레트 스타일링",views:9400,date:"2026-03-19",color:"#8b5cf6",dur:"0:19"},
+  {id:8,title:"면접룩 자켓 추천 모음",views:15300,date:"2026-03-01",color:"#3b82f6",dur:"0:33"},
+  {id:9,title:"데이트룩 미니 스커트 3종",views:20500,date:"2026-03-12",color:"#f97316",dur:"0:21"},
+  {id:10,title:"여름 준비 린넨 셔츠 리뷰",views:7200,date:"2026-03-05",color:"#14b8a6",dur:"0:28"}
+];
+
+let sort="latest",search="",playingId=null,progressVal=0,progressInt=null;
+
+const listEl=document.getElementById("break-list");
+const searchEl=document.getElementById("break-search");
+const statusEl=document.getElementById("break-status");
+const footerEl=document.getElementById("break-footer");
+const npTitle=document.getElementById("np-title");
+const npMeta=document.getElementById("np-meta");
+const npThumb=document.getElementById("np-thumb");
+const npProgress=document.getElementById("np-progress");
+const npStop=document.getElementById("np-stop");
+const confirmOverlay=document.getElementById("confirm-overlay");
+const cCancel=document.getElementById("c-cancel");
+const cOk=document.getElementById("c-ok");
+const cdOverlay=document.getElementById("countdown-overlay");
+const cdNum=document.getElementById("cd-num");
+
+function fv(n){return n>=10000?(n/10000).toFixed(1)+"만":n>=1000?(n/1000).toFixed(1)+"천":n+"";}
+function fd(d){const p=d.split("-");return p[1]+"."+p[2];}
+
+function filtered(){
+  let l=shorts;
+  if(search){const q=search.toLowerCase();l=l.filter(s=>s.title.toLowerCase().includes(q));}
+  const a=[...l];
+  if(sort==="latest")a.sort((x,y)=>new Date(y.date)-new Date(x.date));
+  else if(sort==="views")a.sort((x,y)=>y.views-x.views);
+  else a.sort((x,y)=>new Date(x.date)-new Date(y.date));
+  return a;
+}
+
+function render(){
+  const items=filtered();
+  if(!items.length){listEl.innerHTML='<div class="break-empty"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#d1d1d6" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>검색 결과가 없습니다</div>';return;}
+  listEl.innerHTML=items.map(s=>{
+    const playing=playingId===s.id;
+    return `<div class="break-item${playing?' playing-row':''}">
+      <div class="break-thumb" style="background:${s.color}">
+        <div class="break-thumb-play"><svg width="8" height="8" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg></div>
+        <div class="break-thumb-dur">${s.dur}</div>
+      </div>
+      <div class="break-item-info">
+        <div class="break-item-title">${s.title}</div>
+        <div class="break-item-meta">
+          <span>조회수 ${fv(s.views)}</span><span class="dot"></span><span>${fd(s.date)}</span>
+        </div>
+        ${playing?'<div class="break-playing-badge"><div class="break-playing-dot"></div><span class="break-playing-text">재생 중</span></div>':''}
+      </div>
+      <div class="break-cta">
+        ${playing
+          ?`<button class="break-cta-btn stop" onclick="requestStop()"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>종료</button>`
+          :`<button class="break-cta-btn play" onclick="startPlay(${s.id})"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>재생</button>`}
+      </div>
+    </div>`;
+  }).join("");
+}
+
+function updateStatus(){
+  if(playingId){
+    statusEl.className="break-status active";
+    statusEl.innerHTML='<div class="break-status-dot"></div>재생 중';
+  }else{
+    statusEl.className="break-status idle";
+    statusEl.innerHTML='<div class="break-status-dot"></div>대기중';
+  }
+}
+
+function updateFooter(){
+  if(playingId){
+    const s=shorts.find(x=>x.id===playingId);
+    footerEl.classList.remove("hidden");
+    npTitle.textContent=s.title;
+    npMeta.textContent="조회수 "+fv(s.views)+" · "+s.dur;
+    npThumb.style.background=s.color;
+  }else{
+    footerEl.classList.add("hidden");
+  }
+}
+
+function startPlay(id){
+  playingId=id;
+  progressVal=0;
+  npProgress.style.width="0%";
+  if(progressInt)clearInterval(progressInt);
+  progressInt=setInterval(()=>{progressVal+=0.4;if(progressVal>=100)progressVal=0;npProgress.style.width=progressVal+"%";},100);
+  render();updateStatus();updateFooter();
+}
+
+function requestStop(){
+  confirmOverlay.style.display="flex";
+}
+
+function doStop(){
+  confirmOverlay.style.display="none";
+  cdOverlay.style.display="flex";
+  let c=3;cdNum.textContent=c;
+  const ci=setInterval(()=>{
+    c--;
+    if(c<=0){clearInterval(ci);cdOverlay.style.display="none";finishStop();}
+    else{cdNum.textContent=c;cdNum.style.animation="none";void cdNum.offsetWidth;cdNum.style.animation="countPop 0.5s ease";}
+  },1000);
+}
+
+function finishStop(){
+  playingId=null;progressVal=0;
+  if(progressInt){clearInterval(progressInt);progressInt=null;}
+  npProgress.style.width="0%";
+  render();updateStatus();updateFooter();
+}
+
+searchEl.addEventListener("input",e=>{search=e.target.value;render();});
+
+document.querySelectorAll(".break-sort-chip").forEach(chip=>{
+  chip.addEventListener("click",()=>{
+    sort=chip.dataset.sort;
+    document.querySelectorAll(".break-sort-chip").forEach(c=>c.classList.remove("active"));
+    chip.classList.add("active");
+    render();
+  });
+});
+
+npStop.addEventListener("click",requestStop);
+cCancel.addEventListener("click",()=>{confirmOverlay.style.display="none";});
+cOk.addEventListener("click",doStop);
+
+render();
+</script>
+
+</body>
+</html>
