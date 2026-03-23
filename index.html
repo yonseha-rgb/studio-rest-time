@@ -3,13 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Grip Studio - 쉬는시간 패널</title>
+<title>Grip Studio - 쉬는시간 팝업 v2</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;background:#f5f5f5;color:#1c1c1e;overflow-x:auto;}
 
-/* ===== LAYOUT ===== */
-.studio-layout{display:flex;height:100vh;min-width:1440px;}
+.studio-layout{display:flex;height:100vh;min-width:1200px;}
 
 /* Sidebar */
 .sidebar{width:140px;background:#fff;border-right:1px solid #f0f0f0;display:flex;flex-direction:column;padding:16px 0;flex-shrink:0;}
@@ -29,39 +28,47 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica N
 .sidebar-user-name{font-weight:600;color:#1c1c1e;}
 .sidebar-user-role{color:#8e8e93;}
 
-/* Main Content */
 .main-content{flex:1;display:flex;flex-direction:column;min-width:0;}
 
-/* Top Metrics Bar */
+/* Metrics */
 .metrics-bar{background:#fff;border-bottom:1px solid #f0f0f0;padding:12px 20px;display:flex;align-items:center;gap:16px;flex-shrink:0;}
+.metrics-label{font-size:14px;font-weight:600;margin-right:8px;white-space:nowrap;}
 .metric-card{flex:1;padding:8px 12px;background:#fafafa;border-radius:8px;text-align:center;}
 .metric-label{font-size:10px;color:#8e8e93;margin-bottom:2px;}
 .metric-value{font-size:15px;font-weight:600;color:#1c1c1e;}
-.metric-value.red{color:#ff4757;}
 
-/* Columns */
 .columns{flex:1;display:flex;gap:0;overflow:hidden;}
 
-/* Col 1 - Video */
-.col-video{width:380px;flex-shrink:0;background:#fff;border-right:1px solid #f0f0f0;display:flex;flex-direction:column;}
+/* Col 1 */
+.col-video{width:400px;flex-shrink:0;background:#fff;border-right:1px solid #f0f0f0;display:flex;flex-direction:column;}
 .video-header{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #f0f0f0;}
 .video-timer{display:flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:#ff4757;}
 .video-timer-dot{width:7px;height:7px;border-radius:50%;background:#ff4757;animation:blink 1s infinite;}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
 .video-controls{display:flex;gap:6px;}
 .vc-chip{padding:4px 10px;border-radius:4px;font-size:11px;background:#f5f5f5;color:#666;cursor:pointer;border:none;}
-.video-preview{position:relative;background:#2a2a2a;aspect-ratio:9/16;max-height:420px;margin:12px 16px;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;}
+.video-preview{position:relative;background:#2a2a2a;aspect-ratio:9/16;max-height:400px;margin:12px 16px;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;}
 .video-preview-inner{color:rgba(255,255,255,0.3);font-size:12px;text-align:center;}
-.video-device-info{position:absolute;top:8px;left:8px;display:flex;gap:4px;}
 .device-tag{background:rgba(0,0,0,0.5);color:white;font-size:9px;padding:2px 6px;border-radius:3px;}
-.video-gift{position:absolute;top:8px;left:8px;background:rgba(0,0,0,0.5);color:white;font-size:10px;padding:3px 8px;border-radius:4px;display:flex;align-items:center;gap:4px;margin-top:26px;}
-.video-actions{padding:12px 16px;display:flex;gap:8px;flex-wrap:wrap;border-top:1px solid #f0f0f0;}
-.va-btn{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;border:none;background:none;padding:6px 10px;border-radius:8px;transition:background 0.15s;}
+
+/* Video Actions - Game Row */
+.video-actions{padding:12px 16px;display:flex;gap:6px;flex-wrap:wrap;border-top:1px solid #f0f0f0;align-items:flex-start;}
+.va-btn{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;border:none;background:none;padding:6px 8px;border-radius:8px;transition:all 0.15s;position:relative;}
 .va-btn:hover{background:#f5f5f5;}
 .va-icon{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;}
 .va-label{font-size:10px;color:#666;}
 
-/* Col 2 - Store */
+/* Break Time Button - special */
+.va-btn.break-time-btn{position:relative;}
+.va-btn.break-time-btn .va-icon{background:linear-gradient(135deg,#ede9fe,#f3e8ff);border:1.5px solid #c4b5fd;}
+.va-btn.break-time-btn .va-label{color:#7c3aed;font-weight:600;}
+.va-btn.break-time-btn:hover{background:#f5f0ff;}
+.va-btn.break-time-btn.is-playing .va-icon{background:linear-gradient(135deg,#a855f7,#7c3aed);border-color:#7c3aed;}
+.va-btn.break-time-btn.is-playing .va-label{color:#7c3aed;}
+.break-active-dot{display:none;position:absolute;top:2px;right:10px;width:7px;height:7px;border-radius:50%;background:#a855f7;border:1.5px solid white;animation:blink 1s infinite;}
+.va-btn.break-time-btn.is-playing .break-active-dot{display:block;}
+
+/* Col 2 */
 .col-store{flex:1;min-width:280px;background:#fff;border-right:1px solid #f0f0f0;display:flex;flex-direction:column;}
 .store-header{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #f0f0f0;}
 .store-title{font-size:15px;font-weight:600;}
@@ -73,10 +80,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica N
 .store-search input:focus{border-color:#ff4757;}
 .store-empty{flex:1;display:flex;align-items:center;justify-content:center;color:#c7c7cc;font-size:13px;}
 
-/* Col 3 - Chat */
-.col-chat{width:280px;flex-shrink:0;background:#fff;border-right:1px solid #f0f0f0;display:flex;flex-direction:column;}
+/* Col 3 */
+.col-chat{width:280px;flex-shrink:0;background:#fff;display:flex;flex-direction:column;}
 .chat-tabs{display:flex;border-bottom:1px solid #f0f0f0;}
-.chat-tab{flex:1;padding:10px 0;text-align:center;font-size:12px;color:#8e8e93;cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s;}
+.chat-tab{flex:1;padding:10px 0;text-align:center;font-size:12px;color:#8e8e93;cursor:pointer;border-bottom:2px solid transparent;}
 .chat-tab.active{color:#1c1c1e;font-weight:600;border-bottom-color:#1c1c1e;}
 .chat-sub-tabs{display:flex;padding:8px 12px;gap:6px;border-bottom:1px solid #f0f0f0;}
 .chat-sub-tab{padding:5px 12px;border-radius:20px;font-size:11px;background:#f5f5f5;color:#8e8e93;cursor:pointer;border:none;}
@@ -91,86 +98,92 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica N
 .memo-title{font-size:13px;font-weight:600;}
 .memo-toggle{display:flex;align-items:center;gap:6px;font-size:10px;color:#8e8e93;}
 .memo-toggle-switch{width:36px;height:20px;border-radius:10px;background:#e5e5ea;position:relative;cursor:pointer;}
-.memo-toggle-switch::after{content:'';width:16px;height:16px;border-radius:50%;background:white;position:absolute;top:2px;left:2px;transition:left 0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.15);}
+.memo-toggle-switch::after{content:'';width:16px;height:16px;border-radius:50%;background:white;position:absolute;top:2px;left:2px;box-shadow:0 1px 3px rgba(0,0,0,0.15);}
 .memo-input{width:100%;padding:8px 10px;border:1px solid #e5e5ea;border-radius:8px;font-size:11px;outline:none;resize:none;height:40px;font-family:inherit;}
 .memo-input::placeholder{color:#c7c7cc;}
 .memo-count{text-align:right;font-size:10px;color:#c7c7cc;margin-top:4px;}
 
-/* ===== COL 4 - BREAK TIME PANEL ===== */
-.col-break{width:320px;flex-shrink:0;background:#fff;display:flex;flex-direction:column;border-left:0;}
+/* ===== BREAK TIME POPUP ===== */
+.popup-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:50;align-items:center;justify-content:center;}
+.popup-overlay.show{display:flex;}
 
-.break-header{padding:14px 16px;border-bottom:1px solid #f0f0f0;display:flex;align-items:center;justify-content:space-between;}
-.break-header-left{display:flex;align-items:center;gap:10px;}
-.break-title{font-size:15px;font-weight:600;color:#1c1c1e;}
-.break-subtitle{font-size:11px;color:#8e8e93;font-weight:400;}
-.break-status{display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:600;}
-.break-status.idle{background:#f2f2f7;color:#8e8e93;}
-.break-status.active{background:#f3e8ff;color:#a855f7;}
-.break-status-dot{width:6px;height:6px;border-radius:50%;}
-.break-status.idle .break-status-dot{background:#c7c7cc;}
-.break-status.active .break-status-dot{background:#a855f7;animation:blink 1s infinite;}
+.popup-panel{background:#fff;border-radius:16px;width:420px;max-height:80vh;display:flex;flex-direction:column;box-shadow:0 24px 80px rgba(0,0,0,0.2);overflow:hidden;animation:popIn 0.25s cubic-bezier(0.32,0.72,0,1);}
+@keyframes popIn{from{opacity:0;transform:scale(0.95) translateY(10px);}to{opacity:1;transform:scale(1) translateY(0);}}
 
-.break-search{padding:10px 16px 0;}
-.break-search-input{width:100%;padding:8px 12px 8px 34px;border:1px solid #e5e5ea;border-radius:8px;font-size:12px;background:#fafafa;outline:none;transition:border-color 0.2s;position:relative;}
-.break-search-input:focus{border-color:#a855f7;}
-.break-search-input::placeholder{color:#c7c7cc;}
-.break-search-wrap{position:relative;}
-.break-search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#c7c7cc;pointer-events:none;}
+.popup-header{padding:18px 20px 0;flex-shrink:0;}
+.popup-title-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.popup-title-left{display:flex;align-items:baseline;gap:10px;}
+.popup-title{font-size:17px;font-weight:600;color:#1c1c1e;}
+.popup-subtitle{font-size:12px;color:#8e8e93;}
+.popup-status{display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:600;}
+.popup-status.idle{background:#f2f2f7;color:#8e8e93;}
+.popup-status.active{background:#f3e8ff;color:#a855f7;}
+.popup-status-dot{width:6px;height:6px;border-radius:50%;}
+.popup-status.idle .popup-status-dot{background:#c7c7cc;}
+.popup-status.active .popup-status-dot{background:#a855f7;animation:blink 1s infinite;}
+.popup-close{background:none;border:none;cursor:pointer;color:#8e8e93;padding:4px;border-radius:6px;transition:background 0.15s;margin-left:8px;}
+.popup-close:hover{background:#f2f2f7;}
+.popup-right{display:flex;align-items:center;}
 
-.break-sort{display:flex;gap:5px;padding:10px 16px;border-bottom:1px solid #f0f0f0;}
-.break-sort-chip{padding:5px 12px;border-radius:16px;font-size:11px;font-weight:500;cursor:pointer;border:1px solid #e5e5ea;background:#fafafa;color:#8e8e93;transition:all 0.15s;}
-.break-sort-chip:hover:not(.active){background:#f0f0f0;}
-.break-sort-chip.active{background:#a855f7;color:white;border-color:#a855f7;}
+.popup-search{padding:0 20px;margin-bottom:10px;}
+.popup-search-wrap{position:relative;}
+.popup-search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#c7c7cc;pointer-events:none;}
+.popup-search-input{width:100%;padding:9px 12px 9px 34px;border:1px solid #e5e5ea;border-radius:10px;font-size:13px;background:#fafafa;color:#1c1c1e;outline:none;transition:border-color 0.2s;}
+.popup-search-input:focus{border-color:#a855f7;}
+.popup-search-input::placeholder{color:#c7c7cc;}
 
-.break-list{flex:1;overflow-y:auto;padding:0;}
-.break-list::-webkit-scrollbar{width:4px;}
-.break-list::-webkit-scrollbar-thumb{background:#e5e5ea;border-radius:2px;}
-.break-list::-webkit-scrollbar-thumb:hover{background:#c7c7cc;}
+.popup-sort{display:flex;gap:6px;padding:0 20px 12px;border-bottom:1px solid #f0f0f0;}
+.popup-sort-chip{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid #e5e5ea;background:#fafafa;color:#8e8e93;transition:all 0.15s;}
+.popup-sort-chip:hover:not(.active){background:#f0f0f0;}
+.popup-sort-chip.active{background:#a855f7;color:white;border-color:#a855f7;}
 
-.break-item{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid #f8f8f8;transition:background 0.1s;cursor:default;}
-.break-item:hover{background:#fafafa;}
-.break-item.playing-row{background:#faf5ff;}
+.popup-list{flex:1;overflow-y:auto;padding:0;}
+.popup-list::-webkit-scrollbar{width:4px;}
+.popup-list::-webkit-scrollbar-thumb{background:#e5e5ea;border-radius:2px;}
 
-.break-thumb{width:56px;height:74px;border-radius:8px;flex-shrink:0;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;}
-.break-thumb-play{width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;}
-.break-thumb-dur{position:absolute;bottom:3px;right:3px;background:rgba(0,0,0,0.6);color:white;font-size:8px;padding:1px 4px;border-radius:2px;font-variant-numeric:tabular-nums;}
+.popup-item{display:flex;align-items:center;gap:12px;padding:12px 20px;border-bottom:1px solid #f8f8f8;transition:background 0.1s;}
+.popup-item:hover{background:#fafafa;}
+.popup-item.playing-row{background:#faf5ff;}
 
-.break-item-info{flex:1;min-width:0;}
-.break-item-title{font-size:12px;font-weight:500;color:#1c1c1e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px;}
-.break-item-meta{display:flex;align-items:center;gap:5px;font-size:10px;color:#8e8e93;}
-.break-item-meta .dot{width:2px;height:2px;border-radius:50%;background:#c7c7cc;}
-.break-playing-badge{display:flex;align-items:center;gap:3px;margin-top:4px;}
-.break-playing-dot{width:4px;height:4px;border-radius:50%;background:#a855f7;animation:blink 1s infinite;}
-.break-playing-text{font-size:10px;color:#a855f7;font-weight:600;}
+.popup-thumb{width:60px;height:80px;border-radius:8px;flex-shrink:0;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;}
+.popup-thumb-play{width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;}
+.popup-thumb-dur{position:absolute;bottom:3px;right:3px;background:rgba(0,0,0,0.6);color:white;font-size:9px;padding:1px 4px;border-radius:3px;font-variant-numeric:tabular-nums;}
 
-.break-cta{flex-shrink:0;}
-.break-cta-btn{display:flex;align-items:center;gap:4px;padding:6px 14px;border-radius:16px;border:none;cursor:pointer;font-size:11px;font-weight:600;transition:all 0.15s;}
-.break-cta-btn:hover{filter:brightness(1.05);}
-.break-cta-btn:active{transform:scale(0.96);}
-.break-cta-btn.play{background:#a855f7;color:white;}
-.break-cta-btn.stop{background:#fee2e2;color:#ef4444;}
-.break-cta-btn svg{width:12px;height:12px;}
+.popup-item-info{flex:1;min-width:0;}
+.popup-item-title{font-size:13px;font-weight:500;color:#1c1c1e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:4px;}
+.popup-item-meta{display:flex;align-items:center;gap:6px;font-size:11px;color:#8e8e93;}
+.popup-item-meta .dot{width:2px;height:2px;border-radius:50%;background:#c7c7cc;}
+.popup-playing-badge{display:flex;align-items:center;gap:4px;margin-top:4px;}
+.popup-playing-dot{width:5px;height:5px;border-radius:50%;background:#a855f7;animation:blink 1s infinite;}
+.popup-playing-text{font-size:11px;color:#a855f7;font-weight:600;}
 
-.break-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:#c7c7cc;font-size:12px;}
+.popup-cta-btn{display:flex;align-items:center;gap:5px;padding:7px 16px;border-radius:20px;border:none;cursor:pointer;font-size:12px;font-weight:600;transition:all 0.15s;flex-shrink:0;}
+.popup-cta-btn:hover{filter:brightness(1.05);}
+.popup-cta-btn:active{transform:scale(0.95);}
+.popup-cta-btn.play{background:#a855f7;color:white;}
+.popup-cta-btn.stop{background:#fee2e2;color:#ef4444;}
+.popup-cta-btn svg{width:13px;height:13px;}
 
-/* Break Footer - Now Playing */
-.break-footer{border-top:1px solid #f0f0f0;padding:12px 16px;background:#fafafa;flex-shrink:0;}
-.break-footer.hidden{display:none;}
-.now-playing-label{font-size:9px;font-weight:600;color:#a855f7;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;display:flex;align-items:center;gap:4px;}
-.now-playing-label .np-dot{width:5px;height:5px;border-radius:50%;background:#a855f7;animation:blink 1s infinite;}
-.now-playing-info{display:flex;align-items:center;gap:10px;}
-.now-playing-thumb{width:40px;height:52px;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
-.now-playing-text{flex:1;min-width:0;}
-.now-playing-title{font-size:12px;font-weight:500;color:#1c1c1e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.now-playing-meta{font-size:10px;color:#8e8e93;margin-top:2px;}
-.now-playing-progress{margin-top:8px;height:3px;background:#e5e5ea;border-radius:2px;overflow:hidden;}
-.now-playing-progress-bar{height:100%;background:linear-gradient(90deg,#a855f7,#ec4899);border-radius:2px;transition:width 0.1s linear;}
-.now-playing-stop{padding:5px 12px;border-radius:14px;border:1px solid #fecaca;background:#fff;color:#ef4444;font-size:10px;font-weight:600;cursor:pointer;transition:all 0.15s;flex-shrink:0;}
-.now-playing-stop:hover{background:#fef2f2;}
+.popup-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:#c7c7cc;font-size:13px;padding:40px 0;}
 
-/* Confirm Modal */
-.confirm-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.4);z-index:100;align-items:center;justify-content:center;}
-.confirm-dialog{background:white;border-radius:16px;padding:28px 24px 20px;width:340px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.2);}
+/* Now Playing Footer */
+.popup-footer{border-top:1px solid #f0f0f0;padding:14px 20px;background:#fafafa;flex-shrink:0;}
+.popup-footer.hidden{display:none;}
+.np-label{font-size:9px;font-weight:600;color:#a855f7;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;display:flex;align-items:center;gap:5px;}
+.np-dot{width:5px;height:5px;border-radius:50%;background:#a855f7;animation:blink 1s infinite;}
+.np-info{display:flex;align-items:center;gap:10px;}
+.np-thumb{width:42px;height:56px;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.np-text{flex:1;min-width:0;}
+.np-title{font-size:13px;font-weight:500;color:#1c1c1e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.np-meta{font-size:10px;color:#8e8e93;margin-top:2px;}
+.np-stop-btn{padding:6px 14px;border-radius:16px;border:1px solid #fecaca;background:#fff;color:#ef4444;font-size:11px;font-weight:600;cursor:pointer;transition:all 0.15s;flex-shrink:0;}
+.np-stop-btn:hover{background:#fef2f2;}
+.np-progress{margin-top:10px;height:3px;background:#e5e5ea;border-radius:2px;overflow:hidden;}
+.np-progress-bar{height:100%;background:linear-gradient(90deg,#a855f7,#ec4899);border-radius:2px;transition:width 0.1s linear;}
+
+/* Confirm */
+.confirm-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.45);z-index:60;align-items:center;justify-content:center;}
+.confirm-dialog{background:white;border-radius:16px;padding:28px 24px 20px;width:360px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.25);animation:popIn 0.2s ease;}
 .confirm-icon{width:52px;height:52px;border-radius:50%;background:#fef2f2;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;}
 .confirm-title{font-size:16px;font-weight:600;color:#1c1c1e;margin-bottom:6px;}
 .confirm-desc{font-size:13px;color:#8e8e93;line-height:1.5;margin-bottom:20px;}
@@ -183,18 +196,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica N
 .confirm-ok:hover{background:#dc2626;}
 
 /* Countdown */
-.countdown-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:101;align-items:center;justify-content:center;}
-.countdown-box{text-align:center;}
-.countdown-num{font-size:64px;font-weight:700;color:white;animation:countPop 0.5s ease;}
+.cd-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:70;align-items:center;justify-content:center;}
+.cd-num{font-size:64px;font-weight:700;color:white;animation:countPop 0.5s ease;}
 @keyframes countPop{0%{transform:scale(1.5);opacity:0}40%{transform:scale(1);opacity:1}}
-.countdown-label{color:rgba(255,255,255,0.6);font-size:13px;margin-top:8px;}
+.cd-label{color:rgba(255,255,255,0.6);font-size:13px;margin-top:8px;text-align:center;}
 </style>
 </head>
 <body>
-
 <div class="studio-layout">
 
-  <!-- ===== SIDEBAR ===== -->
+  <!-- SIDEBAR -->
   <div class="sidebar">
     <div class="sidebar-logo">
       <div class="sidebar-logo-icon">Grip</div>
@@ -229,12 +240,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica N
     </div>
   </div>
 
-  <!-- ===== MAIN ===== -->
+  <!-- MAIN -->
   <div class="main-content">
-
-    <!-- Metrics -->
     <div class="metrics-bar">
-      <div style="font-size:14px;font-weight:600;margin-right:8px;white-space:nowrap;">실시간 판매 성과</div>
+      <div class="metrics-label">실시간 판매 성과</div>
       <div class="metric-card"><div class="metric-label">실시간 접속</div><div class="metric-value">0 명</div></div>
       <div class="metric-card"><div class="metric-label">누적 접속</div><div class="metric-value">4 명</div></div>
       <div class="metric-card"><div class="metric-label">주문 금액</div><div class="metric-value">0 원</div></div>
@@ -244,9 +253,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica N
       <div class="metric-card"><div class="metric-label">장바구니 점유 금액</div><div class="metric-value">0 원</div></div>
     </div>
 
-    <!-- Columns -->
     <div class="columns">
-
       <!-- Col 1: Video -->
       <div class="col-video">
         <div class="video-header">
@@ -271,6 +278,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica N
             <p style="margin-top:8px;">카메라 미리보기</p>
           </div>
         </div>
+
+        <!-- Game Actions + 쉬는시간 버튼 -->
         <div class="video-actions">
           <button class="va-btn"><div class="va-icon" style="background:#f5f5f5;">😊</div><span class="va-label">다시하기</span></button>
           <button class="va-btn"><div class="va-icon" style="background:#fff8e1;">👆</div><span class="va-label">선착순</span></button>
@@ -279,6 +288,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica N
           <button class="va-btn"><div class="va-icon" style="background:#e0f2f1;">⭕</div><span class="va-label">OX</span></button>
           <button class="va-btn"><div class="va-icon" style="background:#fce4ec;">🔤</div><span class="va-label">초성</span></button>
           <button class="va-btn"><div class="va-icon" style="background:#fff3e0;">🎲</div><span class="va-label">주사위</span></button>
+          <!-- 쉬는시간 버튼 -->
+          <button class="va-btn break-time-btn" id="break-open-btn" onclick="openPopup()">
+            <span class="break-active-dot" id="break-dot"></span>
+            <div class="va-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2"><path d="M17 10.5V7c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2v-3.5l4 4v-11l-4 4z"/></svg>
+            </div>
+            <span class="va-label">쉬는시간</span>
+          </button>
         </div>
       </div>
 
@@ -291,9 +308,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica N
             <button class="store-action-btn primary">✏️ 상품</button>
           </div>
         </div>
-        <div class="store-search">
-          <input type="text" placeholder="🔍  상품, 상품코드를 입력하세요" />
-        </div>
+        <div class="store-search"><input type="text" placeholder="🔍  상품, 상품코드를 입력하세요" /></div>
         <div class="store-empty">등록된 스토어 상품이 없습니다</div>
       </div>
 
@@ -312,92 +327,81 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica N
           <button class="chat-sub-tab">사이즈</button>
         </div>
         <div class="chat-body"><span class="chat-placeholder">라이브 소개 글을 남겨보세요</span></div>
-        <div class="chat-input-area">
-          <textarea placeholder="라이브 소개 글을 남겨보세요"></textarea>
-        </div>
+        <div class="chat-input-area"><textarea placeholder="라이브 소개 글을 남겨보세요"></textarea></div>
         <div class="memo-section">
-          <div class="memo-header">
-            <span class="memo-title">메모</span>
-            <div class="memo-toggle">
-              화면에 표시
-              <div class="memo-toggle-switch"></div>
-            </div>
-          </div>
+          <div class="memo-header"><span class="memo-title">메모</span><div class="memo-toggle">화면에 표시<div class="memo-toggle-switch"></div></div></div>
           <textarea class="memo-input" placeholder="메모를 남길 수 있어요."></textarea>
           <div class="memo-count">0/100</div>
         </div>
       </div>
-
-      <!-- ===== Col 4: BREAK TIME PANEL ===== -->
-      <div class="col-break">
-        <div class="break-header">
-          <div class="break-header-left">
-            <span class="break-title">쉬는시간</span>
-            <span class="break-subtitle">쉬는동안 쇼츠를 보여주세요!</span>
-          </div>
-          <div class="break-status idle" id="break-status">
-            <div class="break-status-dot"></div>
-            대기중
-          </div>
-        </div>
-
-        <div class="break-search">
-          <div class="break-search-wrap">
-            <svg class="break-search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-            <input class="break-search-input" id="break-search" type="text" placeholder="쇼츠 검색..." />
-          </div>
-        </div>
-
-        <div class="break-sort" id="break-sort">
-          <button class="break-sort-chip active" data-sort="latest">최신순</button>
-          <button class="break-sort-chip" data-sort="views">조회순</button>
-          <button class="break-sort-chip" data-sort="oldest">오래된순</button>
-        </div>
-
-        <div class="break-list" id="break-list"></div>
-
-        <div class="break-footer hidden" id="break-footer">
-          <div class="now-playing-label"><div class="np-dot"></div> NOW PLAYING</div>
-          <div class="now-playing-info">
-            <div class="now-playing-thumb" id="np-thumb" style="background:#7c3aed;">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
-            </div>
-            <div class="now-playing-text">
-              <div class="now-playing-title" id="np-title">—</div>
-              <div class="now-playing-meta" id="np-meta">—</div>
-            </div>
-            <button class="now-playing-stop" id="np-stop">종료</button>
-          </div>
-          <div class="now-playing-progress">
-            <div class="now-playing-progress-bar" id="np-progress"></div>
-          </div>
-        </div>
-      </div>
-
     </div>
   </div>
 </div>
 
-<!-- Confirm -->
+<!-- ===== BREAK TIME POPUP ===== -->
+<div class="popup-overlay" id="popup-overlay">
+  <div class="popup-panel">
+    <div class="popup-header">
+      <div class="popup-title-row">
+        <div class="popup-title-left">
+          <span class="popup-title">쉬는시간</span>
+          <span class="popup-subtitle">쉬는동안 쇼츠를 보여주세요!</span>
+        </div>
+        <div class="popup-right">
+          <div class="popup-status idle" id="popup-status">
+            <div class="popup-status-dot"></div>대기중
+          </div>
+          <button class="popup-close" id="popup-close" onclick="closePopup()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="popup-search">
+      <div class="popup-search-wrap">
+        <svg class="popup-search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <input class="popup-search-input" id="popup-search" type="text" placeholder="쇼츠 검색..." />
+      </div>
+    </div>
+    <div class="popup-sort" id="popup-sort">
+      <button class="popup-sort-chip active" data-sort="latest">최신순</button>
+      <button class="popup-sort-chip" data-sort="views">조회순</button>
+      <button class="popup-sort-chip" data-sort="oldest">오래된순</button>
+    </div>
+    <div class="popup-list" id="popup-list"></div>
+    <div class="popup-footer hidden" id="popup-footer">
+      <div class="np-label"><div class="np-dot"></div> NOW PLAYING</div>
+      <div class="np-info">
+        <div class="np-thumb" id="np-thumb"><svg width="12" height="12" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg></div>
+        <div class="np-text">
+          <div class="np-title" id="np-title">—</div>
+          <div class="np-meta" id="np-meta">—</div>
+        </div>
+        <button class="np-stop-btn" id="np-stop" onclick="requestStop()">종료</button>
+      </div>
+      <div class="np-progress"><div class="np-progress-bar" id="np-bar"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM -->
 <div class="confirm-overlay" id="confirm-overlay">
   <div class="confirm-dialog">
-    <div class="confirm-icon">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0zM12 9v4M12 17h.01"/></svg>
-    </div>
+    <div class="confirm-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0zM12 9v4M12 17h.01"/></svg></div>
     <div class="confirm-title">쇼츠 재생을 종료할까요?</div>
     <div class="confirm-desc">종료하면 카메라가 다시 시청자에게 노출됩니다.<br/>3초 카운트다운 후 라이브 화면으로 전환됩니다.</div>
     <div class="confirm-actions">
-      <button class="confirm-btn confirm-cancel" id="c-cancel">취소</button>
-      <button class="confirm-btn confirm-ok" id="c-ok">종료하기</button>
+      <button class="confirm-btn confirm-cancel" onclick="document.getElementById('confirm-overlay').style.display='none'">취소</button>
+      <button class="confirm-btn confirm-ok" onclick="doStop()">종료하기</button>
     </div>
   </div>
 </div>
 
-<!-- Countdown -->
-<div class="countdown-overlay" id="countdown-overlay">
-  <div class="countdown-box">
-    <div class="countdown-num" id="cd-num">3</div>
-    <div class="countdown-label">잠시 후 라이브로 전환됩니다</div>
+<!-- COUNTDOWN -->
+<div class="cd-overlay" id="cd-overlay">
+  <div style="text-align:center;">
+    <div class="cd-num" id="cd-num">3</div>
+    <div class="cd-label">잠시 후 라이브로 전환됩니다</div>
   </div>
 </div>
 
@@ -417,24 +421,8 @@ const shorts=[
 
 let sort="latest",search="",playingId=null,progressVal=0,progressInt=null;
 
-const listEl=document.getElementById("break-list");
-const searchEl=document.getElementById("break-search");
-const statusEl=document.getElementById("break-status");
-const footerEl=document.getElementById("break-footer");
-const npTitle=document.getElementById("np-title");
-const npMeta=document.getElementById("np-meta");
-const npThumb=document.getElementById("np-thumb");
-const npProgress=document.getElementById("np-progress");
-const npStop=document.getElementById("np-stop");
-const confirmOverlay=document.getElementById("confirm-overlay");
-const cCancel=document.getElementById("c-cancel");
-const cOk=document.getElementById("c-ok");
-const cdOverlay=document.getElementById("countdown-overlay");
-const cdNum=document.getElementById("cd-num");
-
 function fv(n){return n>=10000?(n/10000).toFixed(1)+"만":n>=1000?(n/1000).toFixed(1)+"천":n+"";}
 function fd(d){const p=d.split("-");return p[1]+"."+p[2];}
-
 function filtered(){
   let l=shorts;
   if(search){const q=search.toLowerCase();l=l.filter(s=>s.title.toLowerCase().includes(q));}
@@ -447,100 +435,89 @@ function filtered(){
 
 function render(){
   const items=filtered();
-  if(!items.length){listEl.innerHTML='<div class="break-empty"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#d1d1d6" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>검색 결과가 없습니다</div>';return;}
+  const listEl=document.getElementById("popup-list");
+  if(!items.length){listEl.innerHTML='<div class="popup-empty"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#d1d1d6" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>검색 결과가 없습니다</div>';return;}
   listEl.innerHTML=items.map(s=>{
-    const playing=playingId===s.id;
-    return `<div class="break-item${playing?' playing-row':''}">
-      <div class="break-thumb" style="background:${s.color}">
-        <div class="break-thumb-play"><svg width="8" height="8" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg></div>
-        <div class="break-thumb-dur">${s.dur}</div>
+    const p=playingId===s.id;
+    return `<div class="popup-item${p?' playing-row':''}">
+      <div class="popup-thumb" style="background:${s.color}">
+        <div class="popup-thumb-play"><svg width="9" height="9" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg></div>
+        <div class="popup-thumb-dur">${s.dur}</div>
       </div>
-      <div class="break-item-info">
-        <div class="break-item-title">${s.title}</div>
-        <div class="break-item-meta">
-          <span>조회수 ${fv(s.views)}</span><span class="dot"></span><span>${fd(s.date)}</span>
-        </div>
-        ${playing?'<div class="break-playing-badge"><div class="break-playing-dot"></div><span class="break-playing-text">재생 중</span></div>':''}
+      <div class="popup-item-info">
+        <div class="popup-item-title">${s.title}</div>
+        <div class="popup-item-meta"><span>조회수 ${fv(s.views)}</span><span class="dot"></span><span>${fd(s.date)}</span></div>
+        ${p?'<div class="popup-playing-badge"><div class="popup-playing-dot"></div><span class="popup-playing-text">재생 중</span></div>':''}
       </div>
-      <div class="break-cta">
-        ${playing
-          ?`<button class="break-cta-btn stop" onclick="requestStop()"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>종료</button>`
-          :`<button class="break-cta-btn play" onclick="startPlay(${s.id})"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>재생</button>`}
-      </div>
+      ${p
+        ?`<button class="popup-cta-btn stop" onclick="requestStop()"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>종료</button>`
+        :`<button class="popup-cta-btn play" onclick="startPlay(${s.id})"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>재생</button>`}
     </div>`;
   }).join("");
 }
 
-function updateStatus(){
-  if(playingId){
-    statusEl.className="break-status active";
-    statusEl.innerHTML='<div class="break-status-dot"></div>재생 중';
-  }else{
-    statusEl.className="break-status idle";
-    statusEl.innerHTML='<div class="break-status-dot"></div>대기중';
-  }
-}
-
-function updateFooter(){
+function updateUI(){
+  const statusEl=document.getElementById("popup-status");
+  const footerEl=document.getElementById("popup-footer");
+  const breakBtn=document.getElementById("break-open-btn");
+  const breakDot=document.getElementById("break-dot");
   if(playingId){
     const s=shorts.find(x=>x.id===playingId);
+    statusEl.className="popup-status active";statusEl.innerHTML='<div class="popup-status-dot"></div>재생 중';
     footerEl.classList.remove("hidden");
-    npTitle.textContent=s.title;
-    npMeta.textContent="조회수 "+fv(s.views)+" · "+s.dur;
-    npThumb.style.background=s.color;
+    document.getElementById("np-title").textContent=s.title;
+    document.getElementById("np-meta").textContent="조회수 "+fv(s.views)+" · "+s.dur;
+    document.getElementById("np-thumb").style.background=s.color;
+    breakBtn.classList.add("is-playing");
   }else{
+    statusEl.className="popup-status idle";statusEl.innerHTML='<div class="popup-status-dot"></div>대기중';
     footerEl.classList.add("hidden");
+    breakBtn.classList.remove("is-playing");
   }
 }
 
+function openPopup(){document.getElementById("popup-overlay").classList.add("show");render();updateUI();}
+function closePopup(){document.getElementById("popup-overlay").classList.remove("show");}
+
 function startPlay(id){
-  playingId=id;
-  progressVal=0;
-  npProgress.style.width="0%";
+  playingId=id;progressVal=0;
+  document.getElementById("np-bar").style.width="0%";
   if(progressInt)clearInterval(progressInt);
-  progressInt=setInterval(()=>{progressVal+=0.4;if(progressVal>=100)progressVal=0;npProgress.style.width=progressVal+"%";},100);
-  render();updateStatus();updateFooter();
+  progressInt=setInterval(()=>{progressVal+=0.4;if(progressVal>=100)progressVal=0;document.getElementById("np-bar").style.width=progressVal+"%";},100);
+  render();updateUI();
 }
 
 function requestStop(){
-  confirmOverlay.style.display="flex";
+  closePopup();
+  document.getElementById("confirm-overlay").style.display="flex";
 }
 
 function doStop(){
-  confirmOverlay.style.display="none";
-  cdOverlay.style.display="flex";
-  let c=3;cdNum.textContent=c;
-  const ci=setInterval(()=>{
-    c--;
-    if(c<=0){clearInterval(ci);cdOverlay.style.display="none";finishStop();}
-    else{cdNum.textContent=c;cdNum.style.animation="none";void cdNum.offsetWidth;cdNum.style.animation="countPop 0.5s ease";}
-  },1000);
+  document.getElementById("confirm-overlay").style.display="none";
+  const cdOv=document.getElementById("cd-overlay");
+  const cdN=document.getElementById("cd-num");
+  cdOv.style.display="flex";let c=3;cdN.textContent=c;
+  const ci=setInterval(()=>{c--;if(c<=0){clearInterval(ci);cdOv.style.display="none";finishStop();}else{cdN.textContent=c;cdN.style.animation="none";void cdN.offsetWidth;cdN.style.animation="countPop 0.5s ease";}},1000);
 }
 
 function finishStop(){
   playingId=null;progressVal=0;
   if(progressInt){clearInterval(progressInt);progressInt=null;}
-  npProgress.style.width="0%";
-  render();updateStatus();updateFooter();
+  document.getElementById("np-bar").style.width="0%";
+  render();updateUI();
 }
 
-searchEl.addEventListener("input",e=>{search=e.target.value;render();});
-
-document.querySelectorAll(".break-sort-chip").forEach(chip=>{
+document.getElementById("popup-search").addEventListener("input",e=>{search=e.target.value;render();});
+document.querySelectorAll(".popup-sort-chip").forEach(chip=>{
   chip.addEventListener("click",()=>{
     sort=chip.dataset.sort;
-    document.querySelectorAll(".break-sort-chip").forEach(c=>c.classList.remove("active"));
-    chip.classList.add("active");
-    render();
+    document.querySelectorAll(".popup-sort-chip").forEach(c=>c.classList.remove("active"));
+    chip.classList.add("active");render();
   });
 });
-
-npStop.addEventListener("click",requestStop);
-cCancel.addEventListener("click",()=>{confirmOverlay.style.display="none";});
-cOk.addEventListener("click",doStop);
+document.getElementById("popup-overlay").addEventListener("click",e=>{if(e.target===e.currentTarget)closePopup();});
 
 render();
 </script>
-
 </body>
 </html>
